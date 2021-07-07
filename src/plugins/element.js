@@ -1,6 +1,8 @@
 import Vue from 'vue'
-import { Button } from 'element-ui'
+import elementUI from 'element-ui'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
-Vue.use(Button)
+import 'element-ui/lib/theme-chalk/display.css'
+
 Vue.use(iView)
+Vue.use(elementUI)
