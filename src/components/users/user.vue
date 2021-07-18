@@ -2,9 +2,8 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
       <el-row :gutter="15">
@@ -89,6 +88,7 @@
                 type="danger"
                 icon="el-icon-star-off"
                 size="small"
+                @click="setRole(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -134,9 +134,12 @@
       </el-dialog>
 
       <!-- 修改用户对话框 -->
-      <el-dialog title="提示" 
+      <el-dialog
+        title="提示"
         @closed="dialogClosed('dialogEdit')"
-       :visible.sync="editDialogVisible" width="30%">
+        :visible.sync="editDialogVisible"
+        width="30%"
+      >
         <el-form
           ref="dialogEdit"
           status-icon
@@ -161,6 +164,31 @@
         </span>
       </el-dialog>
 
+<!-- 角色分配对话框 -->
+<el-dialog
+  title="角色分配"
+  :visible.sync="setRolesdialogVisible"
+  width="50%"
+  >
+  <div>
+    <span>用户名：</span>{{userInfo.username}}
+    <span>当前角色：</span>{{userInfo.role_name}}
+    <span>更改角色：</span>  <el-select v-model="selectRoleID" placeholder="请选择">
+    <el-option
+      v-for="item in rolesList"
+      :key="item.id"
+      :label="item.roleName"
+      :value="item.id">
+    </el-option>
+  </el-select>
+  </div>
+
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="setRolesdialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+  </span>
+</el-dialog>
+      <!-- 分页 -->
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -259,6 +287,10 @@ export default {
       },
       editInfo: {},
       editDialogVisible: false,
+      setRolesdialogVisible:false,
+      userInfo:{},
+      rolesList:[],
+      selectRoleID:''
     }
   },
   created() {
@@ -286,7 +318,7 @@ export default {
       return new Date(1486720211).toLocaleDateString()
     },
     dialogClosed(e) {
-      //对话框关闭时重置表单 
+      //对话框关闭时重置表单
       this.$refs[e].resetFields()
     },
     addUser() {
@@ -315,9 +347,10 @@ export default {
     handleEdit() {
       this.$refs.dialogEdit.validate((e) => {
         if (e) {
-          this.$http.put('users/' + this.editInfo.id, this.editInfo)
-            .then(result=> {
-              console.log(result);
+          this.$http
+            .put('users/' + this.editInfo.id, this.editInfo)
+            .then((result) => {
+              console.log(result)
               if (result.data.meta.status == 200) {
                 this.$message.success(result.data.meta.msg)
                 this.editDialogVisible = false
@@ -326,19 +359,38 @@ export default {
             })
         }
       })
-    },deleteUser(e){
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-           this.$http.delete('users/' + e).then(result=> {
-              if (result.data.meta.status == 200) {
-                this.$message.success(result.data.meta.msg)
-                this.getUserList()
-              } else this.$message.error(result.data.meta.msg)
-            })
+    },
+    deleteUser(e) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        this.$http.delete('users/' + e).then((result) => {
+          if (result.data.meta.status == 200) {
+            this.$message.success(result.data.meta.msg)
+            this.getUserList()
+          } else this.$message.error(result.data.meta.msg)
         })
+      })
+    },
+    setRole(userInfo){
+      this.userInfo=userInfo;
+      this.$http.get('roles').then(e=>{
+         if (e.data.meta.status != 200)  return  this.$message.error(e.data.meta.msg)
+        this.rolesList=e.data.data
+        console.log(this.rolesList);
+      })
+      this.setRolesdialogVisible=true
+    },
+    saveRoleInfo(){
+      if(!this.selectRoleID)  return this.$message.error('请选择要更改的角色')
+       
+       this.$http.put(`users/${this.userInfo.id}/role`,{rid:this.selectRoleID}).then(e=>{
+        if (e.data.meta.status != 200)  return  this.$message.error(e.data.meta.msg) 
+       this.setRolesdialogVisible = false
+       this.userInfo= e.data.data
+       })
     }
   },
 }
