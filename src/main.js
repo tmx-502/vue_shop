@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: sueRimn
+ * @Date: 2021-06-22 21:32:45
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-07-21 23:32:39
+ */
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -8,6 +16,9 @@ import './assets/CSS/iconfont.css'
 
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
+
+import TreeTable from 'vue-table-with-tree-grid'
+Vue.component('TreeTable', TreeTable)
 
 import axios from 'axios'
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
