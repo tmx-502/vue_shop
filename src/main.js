@@ -18,7 +18,7 @@ import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 
 import TreeTable from 'vue-table-with-tree-grid'
-Vue.component('TreeTable', TreeTable)
+Vue.component('treeTable', TreeTable)
 
 import axios from 'axios'
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
