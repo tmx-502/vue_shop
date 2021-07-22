@@ -125,7 +125,7 @@
         </el-form-item>
         <el-form-item label="分类名称：">
           <el-cascader
-            v-model="selectedKeys"
+            v-model="selectedCateKeys"
             :options="parentCateList"
             style="width: 100%;"
             :props="cascaderProps"
