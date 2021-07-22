@@ -24,7 +24,7 @@
           :style="{ padding: '24px 0', height: '100%', background: '#fff' }"
         >
           <Layout>
-            <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 20px'}" type="md-menu" size="24"></Icon> 
+            <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 20px'}" type="md-menu" size="24"></Icon>
             <Sider
               hide-trigger
               :style="{ background: '#fff' }"
@@ -82,7 +82,7 @@
       <!-- 侧边栏 -->
       <el-aside :width="iscollapse ? '64px' : '170px'">
         <el-menu
-        router 
+        router
           unique-opened
           :collapse="iscollapse"
           :collapse-transition="false"
@@ -122,7 +122,7 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       menulist: [],
       menuIconList: {
@@ -130,44 +130,43 @@ export default {
         103: 'ios-cube',
         101: 'md-cart',
         102: 'ios-list-box',
-        145: 'md-pie',
+        145: 'md-pie'
       },
-      iscollapse: false,
+      iscollapse: false
     }
   },
-  created() {
-    this.getMenuList();
-    this.activePath=sessionStorage.getItem('activePath');
+  created () {
+    this.getMenuList()
+    this.activePath = sessionStorage.getItem('activePath')
   },
   methods: {
-    exit() {
+    exit () {
       this.$Modal.confirm({
         title: '确认退出系统',
         onOk: () => {
           window.sessionStorage.removeItem('token')
           this.$router.push('/login')
         },
-        onCancel: () => {},
+        onCancel: () => {}
       })
     },
-    //获取菜单
-    getMenuList() {
+    // 获取菜单
+    getMenuList () {
       this.$http.get('menus').then((res) => {
-        if (res.data.meta.status != 200)
-          return this.$Message.warning(res.data.meta.msg)
+        if (res.data.meta.status != 200) { return this.$Message.warning(res.data.meta.msg) }
         this.menulist = res.data.data
       })
     },
-    toggleCollapse() {
-      //切换菜单
+    toggleCollapse () {
+      // 切换菜单
       this.iscollapse = !this.iscollapse
     },
-    saveNavState(e){
-      //缓存打开的菜单
-sessionStorage.setItem('activePath',e)
-this.activePath=e;
+    saveNavState (e) {
+      // 缓存打开的菜单
+      sessionStorage.setItem('activePath', e)
+      this.activePath = e
     }
-  },
+  }
 }
 </script>
 

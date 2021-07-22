@@ -60,7 +60,7 @@
         </el-table-column>
         <el-table-column align="center" label="状态">
           <template slot-scope="scope"
-            ><el-switch v-model="scope.row.mg_state"> </el-switch
+            ><el-switch @change="mg_stateChange(scope.row)" v-model="scope.row.mg_state"> </el-switch
           ></template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="180">
@@ -171,9 +171,9 @@
   width="50%"
   >
   <div>
-    <span>用户名：</span>{{userInfo.username}}
-    <span>当前角色：</span>{{userInfo.role_name}}
-    <span>更改角色：</span>  <el-select v-model="selectRoleID" placeholder="请选择">
+    <div>用户名：{{userInfo.username}}</div>
+    <div>当前角色：{{userInfo.role_name}}</div>
+    <div>更改角色：<el-select v-model="selectRoleID" placeholder="请选择">
     <el-option
       v-for="item in rolesList"
       :key="item.id"
@@ -181,6 +181,7 @@
       :value="item.id">
     </el-option>
   </el-select>
+  </div>
   </div>
 
   <span slot="footer" class="dialog-footer">
@@ -205,7 +206,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     var checkEmail = (rule, value, callback) => {
       const regEmail = /^[0-9A-z-_]+@[0-9A-z-_]+.[0-9A-z]+/
 
@@ -234,7 +235,7 @@ export default {
       queryInfo: {
         query: '',
         pagenum: 1,
-        pagesize: 10,
+        pagesize: 10
       },
       userList: [],
       currentPage: 1,
@@ -245,84 +246,83 @@ export default {
         password: '',
         checkPwd2: '',
         email: '',
-        mobile: '',
+        mobile: ''
       },
       addUserRules: {
         username: [
           {
             required: true,
             trigger: 'blur',
-            message: '请输入用户名称',
+            message: '请输入用户名称'
           },
           {
             min: 2,
             max: 10,
             message: '请输入2-10位字符的用户名',
-            trigger: 'blur',
-          },
+            trigger: 'blur'
+          }
         ],
         password: [
           {
             required: true,
             trigger: 'blur',
-            message: '请输入密码',
+            message: '请输入密码'
           },
           {
             min: 4,
             message: '密码不能少于4位字符',
-            trigger: 'blur',
+            trigger: 'blur'
           },
-          { validator: checkPwd, trigger: 'blur' },
+          { validator: checkPwd, trigger: 'blur' }
         ],
         checkPwd2: [
           {
             required: true,
             trigger: 'blur',
-            message: '请确认密码',
+            message: '请确认密码'
           },
-          { validator: checkPwd2, trigger: 'blur' },
+          { validator: checkPwd2, trigger: 'blur' }
         ],
         email: [{ validator: checkEmail, trigger: 'blur' }],
-        mobile: [{ validator: checkPhoto, trigger: 'blur' }],
+        mobile: [{ validator: checkPhoto, trigger: 'blur' }]
       },
       editInfo: {},
       editDialogVisible: false,
-      setRolesdialogVisible:false,
-      userInfo:{},
-      rolesList:[],
-      selectRoleID:''
+      setRolesdialogVisible: false,
+      userInfo: {},
+      rolesList: [],
+      selectRoleID: ''
     }
   },
-  created() {
+  created () {
     this.getUserList()
   },
   methods: {
-    getUserList() {
+    getUserList () {
       this.$http.get('users', { params: this.queryInfo }).then((e) => {
         e = e.data
-        if (e.meta.status !== 200)
-          return this.$message.error('获取用户列表失败')
+        if (e.meta.status !== 200) { return this.$message.error('获取用户列表失败') }
         this.userList = e.data.users
         this.total = e.data.total
       })
     },
-    handleSizeChange(e) {
+    handleSizeChange (e) {
       this.queryInfo.pagesize = e
     },
-    handleCurrentChange(e) {
+    handleCurrentChange (e) {
       this.queryInfo.pagenum = e
       this.getUserList()
     },
 
-    handleDate(row) {
+    handleDate (row) {
       return new Date(1486720211).toLocaleDateString()
     },
-    dialogClosed(e) {
-      //对话框关闭时重置表单
+    dialogClosed (e) {
+      // 对话框关闭时重置表单
       this.$refs[e].resetFields()
     },
-    addUser() {
-      //添加用户
+    addUser () {
+      // 添加用户
       this.$refs.dialogFrom.validate((e) => {
         if (e) {
           this.$http.post('users', this.addUseForm).then((result) => {
@@ -335,16 +335,15 @@ export default {
         }
       })
     },
-    showEdit(id) {
+    showEdit (id) {
       this.$http.get('users/' + id).then((e) => {
         if (e.data.meta.status !== 200) {
           this.$message.error(e.data.meta.message)
-          return
         } else this.editInfo = e.data.data
       })
       this.editDialogVisible = true
     },
-    handleEdit() {
+    handleEdit () {
       this.$refs.dialogEdit.validate((e) => {
         if (e) {
           this.$http
@@ -360,11 +359,11 @@ export default {
         }
       })
     },
-    deleteUser(e) {
+    deleteUser (e) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).then(() => {
         this.$http.delete('users/' + e).then((result) => {
           if (result.data.meta.status == 200) {
@@ -374,25 +373,31 @@ export default {
         })
       })
     },
-    setRole(userInfo){
-      this.userInfo=userInfo;
-      this.$http.get('roles').then(e=>{
-         if (e.data.meta.status != 200)  return  this.$message.error(e.data.meta.msg)
-        this.rolesList=e.data.data
-        console.log(this.rolesList);
+    setRole (userInfo) {
+      this.selectRoleID = ''
+      this.userInfo = userInfo
+      this.$http.get('roles').then(e => {
+        if (e.data.meta.status != 200) return this.$message.error(e.data.meta.msg)
+        this.rolesList = e.data.data
       })
-      this.setRolesdialogVisible=true
+      this.setRolesdialogVisible = true
     },
-    saveRoleInfo(){
-      if(!this.selectRoleID)  return this.$message.error('请选择要更改的角色')
-       
-       this.$http.put(`users/${this.userInfo.id}/role`,{rid:this.selectRoleID}).then(e=>{
-        if (e.data.meta.status != 200)  return  this.$message.error(e.data.meta.msg) 
-       this.setRolesdialogVisible = false
-       this.userInfo= e.data.data
-       })
+    saveRoleInfo () {
+      if (!this.selectRoleID) return this.$message.error('请选择要更改的角色')
+
+      this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectRoleID }).then(e => {
+        if (e.data.meta.status != 200) return this.$message.error(e.data.meta.msg)
+        this.setRolesdialogVisible = false
+        this.userInfo = e.data.data
+        this.getUserList()
+      })
+    },
+    mg_stateChange (info) {
+      this.$http.put(`users/${info.id}/state/${info.mg_state}`).then(e => {
+        if (e.data.meta.status != 200) return this.$message.error(e.data.meta.msg)
+      })
     }
-  },
+  }
 }
 </script>
 
@@ -406,6 +411,6 @@ export default {
 }
 /* .el-input {
     width: 400px !important;
-    
+
   } */
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="login_container">
+  <div @keyup.enter="handleSubmit('formInline')" class="login_container">
     <div class="login_box">
       <!--头像-->
       <div class="avatar_box">
@@ -26,7 +26,7 @@
           </Input>
         </FormItem>
         <FormItem>
-          <Button type="primary" @click="handleSubmit('formInline')"
+          <Button type="primary"     @click="handleSubmit('formInline')"
             >Signin</Button
           >
         </FormItem>
@@ -37,7 +37,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       formInline: {
         username: '',
@@ -68,7 +68,14 @@ export default {
     }
   },
   methods: {
-    handleSubmit(name) {
+    /**
+     * @name:
+     * @test: test font
+     * @msg:
+     * @param {*} name
+     * @return {*}
+     */
+    handleSubmit (name) {
       this.$refs[name].validate(valid => {
         if (valid) {
           this.$http.post('login', this.formInline).then(result => {
