@@ -308,14 +308,14 @@ export default {
     },
     handleSizeChange (e) {
       this.queryInfo.pagesize = e
+       this.getUserList()
     },
     handleCurrentChange (e) {
       this.queryInfo.pagenum = e
       this.getUserList()
     },
-
     handleDate (row) {
-      return new Date(1486720211).toLocaleDateString()
+      return new Date(row.create_time).toLocaleDateString()
     },
     dialogClosed (e) {
       // 对话框关闭时重置表单
@@ -360,7 +360,7 @@ export default {
       })
     },
     deleteUser (e) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

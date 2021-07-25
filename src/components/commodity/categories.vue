@@ -3,8 +3,8 @@
  * @version:
  * @Author: sueRimn
  * @Date: 2021-07-21 20:45:08
- * @LastEditors: liutq
- * @LastEditTime: 2021-07-22 17:27:34
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-07-24 21:57:08
 -->
 
 <template>
@@ -123,9 +123,9 @@
         <el-form-item label="分类名称：" prop="cat_name">
           <el-input v-model="addCateFrom.cat_name"></el-input>
         </el-form-item>
-        <el-form-item label="分类名称：">
+        <el-form-item label="父级分类：">
           <el-cascader
-            v-model="selectedCateKeys"
+            v-model="selectedKeys"
             :options="parentCateList"
             style="width: 100%;"
             :props="cascaderProps"
@@ -255,8 +255,8 @@ export default {
     parentCateChange() {
       let len = this.selectedKeys.length
       this.addCateFrom = {
-        cat_pid: len > 0 ? this.selectedKeys[len] : 0,
-        cat_level: len,
+        cat_pid: len > 0 ? this.selectedKeys[len-1] : 0,
+        cat_level: len-1,
         cat_name: this.addCateFrom.cat_name
       }
     },
@@ -266,6 +266,8 @@ export default {
         this.$http.post('categories', this.addCateFrom).then(e => {
           if (e.data.meta.status != 201)
             return this.$message.error(e.data.meta.msg)
+            console.log(e);
+            console.log(this.addCateFrom);
           this.$message.success(e.data.meta.msg)
           this.getCateList()
           this.addCateDialogVisible = false

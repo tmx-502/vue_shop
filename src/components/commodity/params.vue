@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: liutq
  * @Date: 2021-07-22 17:44:11
- * @LastEditTime: 2021-07-23 18:34:08
- * @LastEditors: liutq
+ * @LastEditTime: 2021-07-25 12:24:35
+ * @LastEditors: sueRimn
  * @Reference: 
 -->
 <template>
@@ -251,7 +251,8 @@ export default {
           .then(e => {
             if (e.data.meta.status != 201)
               return this.$message.error(e.data.meta.msg)
-            console.log(e)
+              this.addParamDialogVisible = false
+                this.getParamsData()
           })
       })
     },
@@ -273,7 +274,7 @@ export default {
           if (e.data.meta.status != 200)
             return this.$message.error(e.data.meta.msg)
           this.updateParamFrom = e.data.data
-          this.updateParamDialogVisible = true
+          this.updateParamDialogVisible = false
         })
     },
     updateParamDialogClose() {
