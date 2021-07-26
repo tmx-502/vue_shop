@@ -1,21 +1,19 @@
 <!--
- * @Description: 
+ * @Description:
  * @Author: liutq
  * @Date: 2021-07-22 17:44:32
- * @LastEditTime: 2021-07-25 23:56:46
- * @LastEditors: sueRimn
- * @Reference: 
+ * @LastEditTime: 2021-07-26 09:02:32
+ * @LastEditors: liutq
+ * @Reference:
 -->
 <template>
   <div>
-  
-
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>商品管理</el-breadcrumb-item>
       <el-breadcrumb-item>商品列表</el-breadcrumb-item>
     </el-breadcrumb>
- 　　　　<el-card>
+    <el-card>
       <el-row :gutter="20">
         <el-col :span="8">
           <el-input
@@ -94,44 +92,45 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       goodsList: [],
       goodsListParams: {
         query: '',
         pagenum: 1,
-        pagesize: 5,
+        pagesize: 5
       },
-      total: 0,
+      total: 0
     }
   },
   methods: {
-    getGoods() {
-      this.$http.get('goods', { params: this.goodsListParams }).then((e) => {
-        if (e.data.meta.status != 200)
+    getGoods () {
+      this.$http.get('goods', { params: this.goodsListParams }).then(e => {
+        if (e.data.meta.status !== 200) {
           return this.$message.error(e.data.meta.msg)
+        }
         this.goodsList = e.data.data.goods
         this.total = e.data.data.total
       })
     },
-    handleDate(row) {
+    handleDate (row) {
       return new Date(row.add_time).toLocaleDateString()
     },
-    handleSizeChange(e) {
+    handleSizeChange (e) {
       this.goodsListParams.pagesize = e
       this.getGoods()
     },
-    handleCurrentChange(e) {
+    handleCurrentChange (e) {
       this.goodsListParams.pagenum = e
       this.getGoods()
     },
-    deleteGood(goods_id) {
+    deleteGood (goods_id) {
       this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).then(() => {
-        this.$http.delete('goods/' + goods_id).then((result) => {
+        this.$http.delete('goods/' + goods_id).then(result => {
           if (result.data.meta.status == 200) {
             this.$message.success(result.data.meta.msg)
             this.getGoods()
@@ -139,15 +138,14 @@ export default {
         })
       })
     },
-    showEdit(goods_id) {},
-    goAddPage() {
+    showEdit (goods_id) {},
+    goAddPage () {
       this.$router.push('/add')
-    },
+    }
   },
-  created() {
+  created () {
     this.getGoods()
-  },
+  }
 }
 </script>
-<style >
-</style>
+<style></style>

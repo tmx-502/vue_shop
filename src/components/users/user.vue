@@ -308,7 +308,7 @@ export default {
     },
     handleSizeChange (e) {
       this.queryInfo.pagesize = e
-       this.getUserList()
+      this.getUserList()
     },
     handleCurrentChange (e) {
       this.queryInfo.pagenum = e

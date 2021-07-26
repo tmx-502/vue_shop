@@ -73,16 +73,16 @@
         <img class="layout-logo" src="../assets/电商.png" />
         <span class="title">电商管理系统</span>
       </div>
-      <Button @click="exit">
-        <i class="iconfont icon-tuichu"> </i>退出</Button
-      ></el-header
-    >
+      <el-button @click="exit" type="info" icon="el-icon-switch-button"
+        >退出</el-button
+      >
+    </el-header>
     <!-- 主体 -->
-    <el-container >
+    <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="iscollapse ? '64px' : '170px'">
         <el-menu
-        router
+          router
           unique-opened
           :collapse="iscollapse"
           :collapse-transition="false"
@@ -97,10 +97,9 @@
             :index="item.id + ''"
             v-for="item in menulist"
             :key="item.id"
-
           >
             <template slot="title">
-              <Icon :type="menuIconList[item.id]" />
+              <i :class="menuIconList[item.id]" />
               <span class="authName">{{ item.authName }}</span>
             </template>
             <el-menu-item
@@ -122,46 +121,48 @@
 </template>
 <script>
 export default {
-  data () {
+  data() {
     return {
       menulist: [],
       menuIconList: {
-        125: 'md-contacts',
-        103: 'ios-cube',
-        101: 'md-cart',
-        102: 'ios-list-box',
-        145: 'md-pie'
+        125: 'el-icon-user-solid',
+        103: 'el-icon-s-operation',
+        101: 'el-icon-s-goods',
+        102: 'el-icon-s-order',
+        145: 'el-icon-s-data'
       },
       iscollapse: false
     }
   },
-  created () {
+  created() {
     this.getMenuList()
     this.activePath = sessionStorage.getItem('activePath')
   },
   methods: {
-    exit () {
-      this.$Modal.confirm({
-        title: '确认退出系统',
-        onOk: () => {
-          window.sessionStorage.removeItem('token')
-          this.$router.push('/login')
-        },
-        onCancel: () => {}
+    exit() {
+      this.$confirm('退出系统?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        window.sessionStorage.removeItem('token')
+        this.$router.push('/login')
       })
     },
     // 获取菜单
-    getMenuList () {
-      this.$http.get('menus').then((res) => {
-        if (res.data.meta.status != 200) { return this.$Message.warning(res.data.meta.msg) }
+    getMenuList() {
+      this.$http.get('menus').then(res => {
+        if (res.data.meta.status != 200) {
+          return this.$Message.warning(res.data.meta.msg)
+        }
         this.menulist = res.data.data
       })
     },
-    toggleCollapse () {
+    toggleCollapse() {
       // 切换菜单
       this.iscollapse = !this.iscollapse
     },
-    saveNavState (e) {
+    saveNavState(e) {
       // 缓存打开的菜单
       sessionStorage.setItem('activePath', e)
       this.activePath = e
@@ -170,7 +171,7 @@ export default {
 }
 </script>
 
-<style >
+<style>
 .home-container {
   height: 100%;
 }
@@ -216,7 +217,7 @@ export default {
   letter-spacing: 0.2em;
   cursor: pointer;
 }
-.el-submenu .el-menu-item{
+.el-submenu .el-menu-item {
   min-width: 170px !important;
 }
 </style>

@@ -1,3 +1,11 @@
+<!--
+ * @Description: 
+ * @Author: liutq
+ * @Date: 2021-07-22 09:10:57
+ * @LastEditTime: 2021-07-26 11:56:15
+ * @LastEditors: liutq
+ * @Reference: 
+-->
 <template>
   <div id="app">
     <!--路由占位符-->
@@ -12,7 +20,7 @@ export default {
 </script>
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

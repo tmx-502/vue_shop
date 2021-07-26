@@ -20,7 +20,7 @@
     <el-card>
       <!-- <el-table :data="cateList" stripe border style="width: 100%">
         <el-table-column type="expand">
-          
+
         </el-table-column>
         <el-table-column align="center" type="index" width="60"></el-table-column>
         <el-table-column align="center"  prop="cat_name" label="分类名称" width="180">
@@ -167,7 +167,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       cateList: [],
       queryInfo: {
@@ -224,64 +224,67 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.getCateList()
   },
   methods: {
-    getCateList() {
+    getCateList () {
       this.$http.get('categories', { params: this.queryInfo }).then(e => {
-        if (e.data.meta.status != 200)
+        if (e.data.meta.status !== 200) {
           return this.$message.error(e.data.meta.msg)
+        }
         this.cateList = e.data.data.result
         this.total = e.data.data.total
       })
     },
-    handleSizeChange(newSize) {
+    handleSizeChange (newSize) {
       this.queryInfo.pagesize = newSize
       this.getCateList()
     },
-    handleCurrentChange(nowCurrent) {
+    handleCurrentChange (nowCurrent) {
       this.queryInfo.pagenum = nowCurrent
       this.getCateList()
     },
-    getParentCateList() {
+    getParentCateList () {
       this.addCateDialogVisible = true
       this.$http.get('categories', { params: { type: 2 } }).then(e => {
-        if (e.data.meta.status != 200)
+        if (e.data.meta.status !== 200) {
           return this.$message.error(e.data.meta.msg)
+        }
         this.parentCateList = e.data.data
       })
     },
-    parentCateChange() {
-      let len = this.selectedKeys.length
+    parentCateChange () {
+      const len = this.selectedKeys.length
       this.addCateFrom = {
-        cat_pid: len > 0 ? this.selectedKeys[len-1] : 0,
-        cat_level: len-1,
+        cat_pid: len > 0 ? this.selectedKeys[len - 1] : 0,
+        cat_level: len - 1,
         cat_name: this.addCateFrom.cat_name
       }
     },
-    addCate() {
+    addCate () {
       this.$refs.addCateRef.validate(valid => {
         if (!valid) return
         this.$http.post('categories', this.addCateFrom).then(e => {
-          if (e.data.meta.status != 201)
+          if (e.data.meta.status !== 201) {
             return this.$message.error(e.data.meta.msg)
-            console.log(e);
-            console.log(this.addCateFrom);
+          }
+          console.log(e)
+          console.log(this.addCateFrom)
           this.$message.success(e.data.meta.msg)
           this.getCateList()
           this.addCateDialogVisible = false
         })
       })
     },
-    addCateDialogClose() {
+    addCateDialogClose () {
       this.$refs.addCateRef.resetFields()
       this.selectedKeys = []
       this.addCateFrom.cat_pid = 0
       this.addCateFrom.cat_level = 0
       this.addCateDialogVisible = false
     },
-    updateCateDialogClose() {
+    updateCateDialogClose () {
       this.$refs.updateCateRef.resetFields()
       this.updateCateFrom = {
         cat_id: 0,
@@ -289,11 +292,11 @@ export default {
       }
       this.updateCateDialogVisible = false
     },
-    showUpdateCate(cat_id) {
+    showUpdateCate (cat_id) {
       this.updateCateDialogVisible = true
       this.updateCateFrom.cat_id = cat_id
     },
-    updateCate() {
+    updateCate () {
       this.$refs.updateCateRef.validate(valid => {
         if (!valid) return
         this.$http
@@ -301,23 +304,25 @@ export default {
             cat_name: this.updateCateFrom.cat_name
           })
           .then(e => {
-            if (e.data.meta.status != 200)
+            if (e.data.meta.status !== 200) {
               return this.$message.error(e.data.meta.msg)
+            }
             this.$message.success(e.data.meta.msg)
             this.getCateList()
             this.updateCateDialogVisible = false
           })
       })
     },
-    showDeleteCate(cat_id) {
+    showDeleteCate (cat_id) {
       this.$confirm('此操作将永久删除该类项目, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.$http.delete(`categories/${cat_id}`).then(e => {
-          if (e.data.meta.status != 200)
+          if (e.data.meta.status !== 200) {
             return this.$message.error(e.data.meta.msg)
+          }
           this.$message.success(e.data.meta.msg)
           this.getCateList()
         })

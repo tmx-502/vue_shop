@@ -6,38 +6,38 @@
         <img src="../assets/logo.png" />
       </div>
       <!--登录-->
-      <Form ref="formInline" :model="formInline" :rules="ruleInline">
-        <FormItem class="fromItem" prop="user">
-          <Input
+      <el-form ref="formInline" :model="formInline" :rules="ruleInline">
+        <el-form-item class="fromItem" prop="user">
+          <el-input
             type="text"
             v-model="formInline.username"
             placeholder="Username"
           >
-            <Icon type="ios-person-outline" slot="prepend"></Icon>
-          </Input>
-        </FormItem>
-        <FormItem class="fromItem" prop="password">
-          <Input
+            <template slot="prepend"><i class="el-icon-user"></i></template>
+          </el-input>
+        </el-form-item>
+        <el-form-item class="fromItem" prop="password">
+          <el-input
             type="password"
             v-model="formInline.password"
             placeholder="Password"
           >
-            <Icon type="ios-lock-outline" slot="prepend"></Icon>
-          </Input>
-        </FormItem>
-        <FormItem>
-          <Button type="primary"     @click="handleSubmit('formInline')"
-            >Signin</Button
+            <template slot="prepend"> <i class="el-icon-lock"></i></template>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleSubmit('formInline')"
+            >Signin</el-button
           >
-        </FormItem>
-      </Form>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       formInline: {
         username: '',
@@ -75,12 +75,12 @@ export default {
      * @param {*} name
      * @return {*}
      */
-    handleSubmit (name) {
+    handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
           this.$http.post('login', this.formInline).then(result => {
             if (result.data.meta.status == 200) {
-              this.$Message.success(result.data.meta.msg)
+              this.$message.success(result.data.meta.msg)
               window.sessionStorage.setItem('token', result.data.data.token)
               this.$router.push('/home')
             } else {
@@ -137,5 +137,9 @@ form {
 }
 .fromItem {
   margin-bottom: 8%;
+}
+.el-icon-user,
+.el-icon-lock {
+  display: inline;
 }
 </style>

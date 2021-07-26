@@ -1,10 +1,10 @@
 <!--
- * @Description: 
+ * @Description:
  * @Author: liutq
  * @Date: 2021-07-22 17:44:11
- * @LastEditTime: 2021-07-25 12:24:35
- * @LastEditors: sueRimn
- * @Reference: 
+ * @LastEditTime: 2021-07-26 09:02:22
+ * @LastEditors: liutq
+ * @Reference:
 -->
 <template>
   <div>
@@ -162,7 +162,7 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       cateList: [],
       cascaderProps: {
@@ -191,18 +191,19 @@ export default {
       newinputValue: ''
     }
   },
-  created() {
+  created () {
     this.getCateList()
   },
   methods: {
-    getCateList() {
+    getCateList () {
       this.$http.get('categories').then(e => {
-        if (e.data.meta.status != 200)
+        if (e.data.meta.status !== 200) {
           return this.$message.error(e.data.meta.msg)
+        }
         this.cateList = e.data.data
       })
     },
-    handleCateChange() {
+    handleCateChange () {
       if (this.selectedCateKeys.length < 3) {
         this.selectedCateKeys = []
         this.manyTableData = []
@@ -211,11 +212,11 @@ export default {
       }
       this.getParamsData()
     },
-    handleTabsClick() {
+    handleTabsClick () {
       if (this.selectedCateKeys.length < 3) return
       this.getParamsData()
     },
-    getParamsData() {
+    getParamsData () {
       this.$http
         .get(
           `categories/${
@@ -224,18 +225,19 @@ export default {
           { params: { sel: this.activeName } }
         )
         .then(e => {
-          if (e.data.meta.status != 200)
+          if (e.data.meta.status !== 200) {
             return this.$message.error(e.data.meta.msg)
+          }
           e.data.data.forEach(item => {
             item.attr_vals =
-              item.attr_vals != '' ? item.attr_vals.split(',') : []
+              item.attr_vals !== '' ? item.attr_vals.split(',') : []
             item.inputVisible = false
             item.inputValue = ''
           })
           this[`${this.activeName}TableData`] = e.data.data
         })
     },
-    addParam() {
+    addParam () {
       this.$refs.addParamRef.validate(valid => {
         if (!valid) return
         this.$http
@@ -249,18 +251,19 @@ export default {
             }
           )
           .then(e => {
-            if (e.data.meta.status != 201)
+            if (e.data.meta.status !== 201) {
               return this.$message.error(e.data.meta.msg)
-              this.addParamDialogVisible = false
-                this.getParamsData()
+            }
+            this.addParamDialogVisible = false
+            this.getParamsData()
           })
       })
     },
-    addParamDialogClose() {
+    addParamDialogClose () {
       this.$refs.addParamRef.resetFields()
       this.addParamDialogVisible = false
     },
-    showUpdateDialog(attr_id) {
+    showUpdateDialog (attr_id) {
       this.$http
         .get(
           `categories/${
@@ -271,17 +274,18 @@ export default {
           }
         )
         .then(e => {
-          if (e.data.meta.status != 200)
+          if (e.data.meta.status !== 200) {
             return this.$message.error(e.data.meta.msg)
+          }
           this.updateParamFrom = e.data.data
           this.updateParamDialogVisible = false
         })
     },
-    updateParamDialogClose() {
+    updateParamDialogClose () {
       this.$refs.updateParamRef.resetFields()
       this.updateParamDialogVisible = false
     },
-    updateParam() {
+    updateParam () {
       this.$refs.updateParamRef.validate(valid => {
         if (!valid) return
         this.$http
@@ -295,14 +299,15 @@ export default {
             }
           )
           .then(e => {
-            if (e.data.meta.status != 200)
+            if (e.data.meta.status !== 200) {
               return this.$message.error(e.data.meta.msg)
+            }
             this.getParamsData()
             this.updateParamDialogVisible = false
           })
       })
     },
-    showDeleteParam(attr_id) {
+    showDeleteParam (attr_id) {
       this.$confirm('此操作将永久删除该类项目, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -315,14 +320,15 @@ export default {
             }/attributes/${attr_id}`
           )
           .then(e => {
-            if (e.data.meta.status != 200)
+            if (e.data.meta.status !== 200) {
               return this.$message.error(e.data.meta.msg)
+            }
             this.$message.success(e.data.meta.msg)
             this.getParamsData()
           })
       })
     },
-    handleInputConfirm(row) {
+    handleInputConfirm (row) {
       row.inputVisible = false
 
       if (row.inputValue === '') return
@@ -330,7 +336,7 @@ export default {
       row.inputValue = ''
       this.updateAttrVals(row)
     },
-    updateAttrVals(row) {
+    updateAttrVals (row) {
       this.$http
         .put(
           `categories/${
@@ -343,17 +349,18 @@ export default {
           }
         )
         .then(e => {
-          if (e.data.meta.status != 200)
+          if (e.data.meta.status !== 200) {
             return this.$message.error(e.data.meta.msg)
+          }
         })
     },
-    deleteTag(index, row) {
+    deleteTag (index, row) {
       row.attr_vals.splice(index, 1)
       this.updateAttrVals(row)
     }
   },
   computed: {
-    addBtnIsDisabled() {
+    addBtnIsDisabled () {
       return this.selectedCateKeys.length < 3
     }
   }

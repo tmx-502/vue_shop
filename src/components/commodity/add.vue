@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: sueRimn
  * @Date: 2021-07-24 16:56:15
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-07-25 18:30:18
+ * @LastEditors: liutq
+ * @LastEditTime: 2021-07-26 08:58:06
 -->
 <template>
   <div>
@@ -136,9 +136,9 @@ import _ from 'lodash'
 
 export default {
   components: {
-    quillEditor,
+    quillEditor
   },
-  data() {
+  data () {
     return {
       active: '0',
       addForm: {
@@ -149,89 +149,90 @@ export default {
         goods_weight: '',
         goods_introduce: '',
         pics: [],
-        attrs: [],
+        attrs: []
       },
       addFormRules: {
         goods_name: [
           {
             required: true,
             trigger: 'blur',
-            message: '请输入商品名称',
-          },
+            message: '请输入商品名称'
+          }
         ],
         goods_price: [
           {
             required: true,
             trigger: 'blur',
-            message: '请输入价格',
-          },
+            message: '请输入价格'
+          }
         ],
         goods_number: [
           {
             required: true,
             trigger: 'blur',
-            message: '请输入数量',
-          },
+            message: '请输入数量'
+          }
         ],
         goods_weight: [
           {
             required: true,
             trigger: 'blur',
-            message: '请输入重量',
-          },
+            message: '请输入重量'
+          }
         ],
         goods_introduce: [
           {
             required: true,
             trigger: 'blur',
-            message: '请输入介绍',
-          },
+            message: '请输入介绍'
+          }
         ],
         goods_cat: [
           {
             required: true,
             trigger: 'blur',
-            message: '请输入商品类',
-          },
-        ],
+            message: '请输入商品类'
+          }
+        ]
       },
       parentCateList: [],
       addProps: {
         expandTrigger: 'hover',
         value: 'cat_pid',
         label: 'cat_name',
-        children: 'children',
+        children: 'children'
       },
       manyTableData: [],
       onlyTableData: [],
       uploadUrl: 'http://127.0.0.1:8888/api/private/v1/upload',
       uploadHeaders: {
-        Authorization: window.sessionStorage.getItem('token'),
+        Authorization: window.sessionStorage.getItem('token')
       },
       previewPicUrl: '',
-      previewdialogVisible: false,
+      previewdialogVisible: false
     }
   },
 
   methods: {
-    next() {
+    next () {
       if (this.active++ > 2) this.active = 0
     },
-    getParentCateList() {
+    getParentCateList () {
       this.addCateDialogVisible = true
-      this.$http.get('categories').then((e) => {
-        if (e.data.meta.status != 200)
+      this.$http.get('categories').then(e => {
+        if (e.data.meta.status !== 200) {
           return this.$message.error(e.data.meta.msg)
+        }
         this.parentCateList = e.data.data
       })
     },
-    tabsChange(activeName, oldActiveName) {
-      if (activeName != '0' && this.addForm.goods_cat.length < 3) {
+    tabsChange (activeName, oldActiveName) {
+      if (activeName !== '0' && this.addForm.goods_cat.length < 3) {
         this.$message.error('请先选择商品')
         return false
       }
       if (activeName === '1' || activeName === '2') {
-        let sel = activeName === '1' ? 'many' : 'only'
+        const sel = activeName === '1' ? 'many' : 'only'
         this.$http
           .get(
             `categories/${
@@ -239,75 +240,75 @@ export default {
             }/attributes`,
             { params: { sel } }
           )
-          .then((e) => {
-            if (e.data.meta.status != 200)
+          .then(e => {
+            if (e.data.meta.status !== 200) {
               return this.$message.error(e.data.meta.msg)
+            }
             e.data.data.forEach(
-              (e) =>
+              e =>
                 (e.attr_vals =
                   e.attr_vals.length == 0
                     ? sel == 'many'
                       ? []
                       : ''
                     : sel == 'many'
-                    ? e.attr_vals.split(',')
-                    : e.attr_vals)
+                      ? e.attr_vals.split(',')
+                      : e.attr_vals)
             )
             this[sel + 'TableData'] = e.data.data
             console.log(sel, this[sel + 'TableData'])
           })
       }
     },
-    handlePreview(file) {
+    handlePreview (file) {
       this.previewPicUrl = file.response.data.url
       this.previewdialogVisible = true
     },
-    handleRemove(file) {
+    handleRemove (file) {
       this.addForm.pics.splice(
-        this.addForm.pics.findIndex(
-          (e) => e.pic == file.response.data.tmp_path
-        ),
+        this.addForm.pics.findIndex(e => e.pic == file.response.data.tmp_path),
         1
       )
     },
-    uploadResult(result, file, fileList) {
-      let picInfo = { pic: result.data.tmp_path }
+    uploadResult (result, file, fileList) {
+      const picInfo = { pic: result.data.tmp_path }
       this.addForm.pics.push(picInfo)
-      let urlList = []
+      const urlList = []
       // fileList.forEach(e=>urlList.push( e.response.data.url))
       // this.previewPicUrlList=urlList
       //         console.log(fileList);
     },
-    addGoods() {
-      this.$refs.addRuleFormRef.validate((valid) => {
+    addGoods () {
+      this.$refs.addRuleFormRef.validate(valid => {
         if (!valid) return this.$message.error('请填写必要信息')
 
-        let tableData = [...this.manyTableData, ...this.onlyTableData]
-        tableData.forEach((item) => {
+        const tableData = [...this.manyTableData, ...this.onlyTableData]
+        tableData.forEach(item => {
           const newInfo = {
             attr_id: item.attr_id,
             attr_value:
-              typeof item.attr_vals == 'object'
+              typeof item.attr_vals === 'object'
                 ? item.attr_vals.join(',')
-                : item.attr_vals,
+                : item.attr_vals
           }
           this.addForm.attrs.push(newInfo)
         })
-        let from = _.cloneDeep(this.addForm)
+        const from = _.cloneDeep(this.addForm)
         from.goods_cat = from.goods_cat.join(',')
-       this.$http.post('goods',from).then(e=>{
-           console.log(e);
-            if (e.data.meta.status != 201)
-              return this.$message.error(e.data.meta.msg)
-        this.$message.success(e.data.meta.msg)
-        this.$router.push('/goods')
-       })
+        this.$http.post('goods', from).then(e => {
+          console.log(e)
+          if (e.data.meta.status !== 201) {
+            return this.$message.error(e.data.meta.msg)
+          }
+          this.$message.success(e.data.meta.msg)
+          this.$router.push('/goods')
+        })
       })
-    },
+    }
   },
-  created() {
+  created () {
     this.getParentCateList()
-  },
+  }
 }
 </script>
 

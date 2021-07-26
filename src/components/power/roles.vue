@@ -16,7 +16,7 @@
           <template slot-scope="scope">
             <el-row
               class="rowBorder"
-              v-for="(item, i1) in scope.row.children"
+              v-for="item in scope.row.children"
               :key="item.id"
             >
               <el-col :span="5"
@@ -28,7 +28,7 @@
               <el-col :span="19">
                 <el-row
                   class="rowBorder rowBorderNone"
-                  v-for="(subItem, i2) in item.children"
+                  v-for="subItem in item.children"
                   :key="subItem.id"
                 >
                   <el-col :span="5"
@@ -43,7 +43,7 @@
                     ><el-tag
                       @close="deleteRights(scope.row, it.id)"
                       closable
-                      v-for="(it, i3) in subItem.children"
+                      v-for="it in subItem.children"
                       :key="it.id"
                       type="info"
                       >{{ it.authName }}</el-tag
@@ -80,9 +80,14 @@
     </el-card>
 
     <!-- 权限对话框 -->
-    <el-dialog title="权限分配" :visible.sync="setDialogRolesVisible" width="30%" @close="setRightsDialogClose">
+    <el-dialog
+      title="权限分配"
+      :visible.sync="setDialogRolesVisible"
+      width="30%"
+      @close="setRightsDialogClose"
+    >
       <el-tree
-      ref="rightsTreeRef"
+        ref="rightsTreeRef"
         show-checkbox
         :default-checked-keys="defKeys"
         node-key="id"
@@ -93,9 +98,7 @@
       ></el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="setDialogRolesVisible = false">取 消</el-button>
-        <el-button type="primary" @click="setRoles"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="setRoles">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -119,7 +122,7 @@ export default {
   },
   methods: {
     getRolesList () {
-      this.$http.get('roles').then((e) => {
+      this.$http.get('roles').then(e => {
         if (e.data.meta.status != 200) {
           this.$message.error(e.data.meta.msg)
           return
@@ -133,13 +136,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http
-          .delete('roles/' + role.id + '/rights/' + rightId)
-          .then((e) => {
-            if (e.data.meta.status != 200) {
-              this.$message.error(e.data.meta, msg)
-            } else role.children = e.data.data
-          })
+        this.$http.delete('roles/' + role.id + '/rights/' + rightId).then(e => {
+          if (e.data.meta.status != 200) {
+            this.$message.error(e.data.meta, msg)
+          } else role.children = e.data.data
+        })
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -148,18 +149,18 @@ export default {
     },
     showSetRolesDialog (role) {
       this.rolesID = role.id
-      const getDefKeys = (node) => {
+      const getDefKeys = node => {
         if (!node.children) {
           this.defKeys.push(node.id)
           return
         }
-        node.children.forEach((item) => {
+        node.children.forEach(item => {
           getDefKeys(item)
         })
       }
       getDefKeys(role)
 
-      this.$http.get('rights/tree').then((e) => {
+      this.$http.get('rights/tree').then(e => {
         if (e.data.meta.status != 200) {
           this.$message.error(e.data.meta.msg)
           return
@@ -172,7 +173,10 @@ export default {
       this.defKeys = []
     },
     setRoles () {
-      const rids = [...this.$refs.rightsTreeRef.getCheckedKeys(), ...this.$refs.rightsTreeRef.getHalfCheckedKeys()].join(',')
+      const rids = [
+        ...this.$refs.rightsTreeRef.getCheckedKeys(),
+        ...this.$refs.rightsTreeRef.getHalfCheckedKeys()
+      ].join(',')
       this.$http.post(`roles/${this.rolesID}/rights`, { rids }).then(e => {
         if (e.data.meta.status != 200) {
           this.$message.error(e.data.meta.msg)
