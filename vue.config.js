@@ -2,47 +2,47 @@
  * @Description:
  * @Author: liutq
  * @Date: 2021-07-22 09:10:57
- * @LastEditTime: 2021-07-26 17:39:59
- * @LastEditors: liutq
+ * @LastEditTime: 2021-07-26 21:17:05
+ * @LastEditors: sueRimn
  * @Reference:
  */
 module.exports = {
-  lintOnSave: false
+    lintOnSave: false,
+    chainWebpack: config => {
+        //发布模式
+        config.when(process.env.NODE_ENV === 'production', config => {
+            config
+                .entry('app')
+                .clear()
+                .add('./src/main-prod.js')
 
-  /*  chainWebpack: config => {
-    发布模式
-    config.when(process.env.NODE_ENV === 'production', config => {
-      config
-        .entry('app')
-        .clear()
-        .add('./src/main-prod.js')
+            config.set('externals', {
+                vue: 'Vue',
+                'vue-router': 'VueRouter',
+                axios: 'axios',
+                lodash: '_',
+                echarts: 'echarts',
+                nprogress: 'NProgress',
+                'vue-quill-editor': 'VueQuillEditor'
+            })
 
-      config.set('externals', {
-        vue: 'Vue',
-        axios: 'axios',
-        lodash: '_',
-        echarts: 'echarts',
-        nprogress: 'NProgress',
-        'vue-quill-editor': 'VueQuillEditor'
-      })
+            config.plugin('html').tap(args => {
+                args[0].isProd = true
+                return args
+            })
+        })
 
-      config.plugin('html').tap(args => {
-        args[0].isProd = true
-        return args
-      })
-    })
+        // 开发模式
+        config.when(process.env.NODE_ENV === 'development', config => {
+            config
+                .entry('app')
+                .clear()
+                .add('./src/main-dev.js')
 
-    // 开发模式
-    config.when(process.env.NODE_ENV === 'development', config => {
-      config
-        .entry('app')
-        .clear()
-        .add('./src/main-dev.js')
-
-      config.plugin('html').tap(args => {
-        args[0].isProd = false
-        return args
-      })
-    })
-  } */
+            config.plugin('html').tap(args => {
+                args[0].isProd = false
+                return args
+            })
+        })
+    }
 }

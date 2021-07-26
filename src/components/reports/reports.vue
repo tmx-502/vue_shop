@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: liutq
  * @Date: 2021-07-26 09:14:05
- * @LastEditTime: 2021-07-26 15:06:31
- * @LastEditors: liutq
+ * @LastEditTime: 2021-07-26 21:20:18
+ * @LastEditors: sueRimn
  * @Reference: 
 -->
 <template>
@@ -79,7 +79,7 @@ export default {
 </script>
 <style>
 .main {
-  width: 1000px;
-  height: 600px;
+  width: 850px;
+  height: 500px;
 }
 </style>
