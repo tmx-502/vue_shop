@@ -14,40 +14,19 @@
       <el-table :data="rolesList" border stripe>
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <el-row
-              class="rowBorder"
-              v-for="item in scope.row.children"
-              :key="item.id"
-            >
+            <el-row class="rowBorder" v-for="item in scope.row.children" :key="item.id">
               <el-col :span="5"
-                ><el-tag @close="deleteRights(scope.row, item.id)" closable>{{
-                  item.authName
-                }}</el-tag
+                ><el-tag @close="deleteRights(scope.row, item.id)" closable>{{ item.authName }}</el-tag
                 ><i class="el-icon-caret-right"></i
               ></el-col>
               <el-col :span="19">
-                <el-row
-                  class="rowBorder rowBorderNone"
-                  v-for="subItem in item.children"
-                  :key="subItem.id"
-                >
+                <el-row class="rowBorder rowBorderNone" v-for="subItem in item.children" :key="subItem.id">
                   <el-col :span="5"
-                    ><el-tag
-                      @close="deleteRights(scope.row, subItem.id)"
-                      closable
-                      type="success"
-                      >{{ subItem.authName }}</el-tag
+                    ><el-tag @close="deleteRights(scope.row, subItem.id)" closable type="success">{{ subItem.authName }}</el-tag
                     ><i class="el-icon-caret-right"></i
                   ></el-col>
                   <el-col :span="19"
-                    ><el-tag
-                      @close="deleteRights(scope.row, it.id)"
-                      closable
-                      v-for="it in subItem.children"
-                      :key="it.id"
-                      type="info"
-                      >{{ it.authName }}</el-tag
-                    ></el-col
+                    ><el-tag @close="deleteRights(scope.row, it.id)" closable v-for="it in subItem.children" :key="it.id" type="info">{{ it.authName }}</el-tag></el-col
                   >
                 </el-row>
               </el-col>
@@ -59,43 +38,17 @@
         <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
         <el-table-column label="操作" width="300px"
           ><template slot-scope="scope">
-            <el-button size="mini" type="primary" icon="el-icon-edit"
-              >编辑</el-button
-            >
-            <el-button
-              size="mini"
-              type="danger"
-              icon="el-icon-delete"
-            ></el-button>
-            <el-button
-              size="mini"
-              type="warning"
-              icon="el-icon-setting"
-              @click="showSetRolesDialog(scope.row)"
-              >分配权限</el-button
-            >
+            <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
+            <el-button size="mini" type="danger" icon="el-icon-delete"></el-button>
+            <el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRolesDialog(scope.row)">分配权限</el-button>
           </template></el-table-column
         >
       </el-table>
     </el-card>
 
     <!-- 权限对话框 -->
-    <el-dialog
-      title="权限分配"
-      :visible.sync="setDialogRolesVisible"
-      width="30%"
-      @close="setRightsDialogClose"
-    >
-      <el-tree
-        ref="rightsTreeRef"
-        show-checkbox
-        :default-checked-keys="defKeys"
-        node-key="id"
-        :data="rightsList"
-        :props="rightsListProps"
-        check-on-click-node
-        getCurrentKey
-      ></el-tree>
+    <el-dialog title="权限分配" :visible.sync="setDialogRolesVisible" width="30%" @close="setRightsDialogClose">
+      <el-tree ref="rightsTreeRef" show-checkbox :default-checked-keys="defKeys" node-key="id" :data="rightsList" :props="rightsListProps" check-on-click-node getCurrentKey></el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="setDialogRolesVisible = false">取 消</el-button>
         <el-button type="primary" @click="setRoles">确 定</el-button>
@@ -106,7 +59,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       rolesList: [],
       setDialogRolesVisible: false,
@@ -121,7 +74,7 @@ export default {
     }
   },
   methods: {
-    getRolesList () {
+    getRolesList() {
       this.$http.get('roles').then(e => {
         if (e.data.meta.status != 200) {
           this.$message.error(e.data.meta.msg)
@@ -130,7 +83,7 @@ export default {
         this.rolesList = e.data.data
       })
     },
-    deleteRights (role, rightId) {
+    deleteRights(role, rightId) {
       this.$confirm('此操作删除该权限, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -147,7 +100,7 @@ export default {
         })
       })
     },
-    showSetRolesDialog (role) {
+    showSetRolesDialog(role) {
       this.rolesID = role.id
       const getDefKeys = node => {
         if (!node.children) {
@@ -169,14 +122,11 @@ export default {
       })
       this.setDialogRolesVisible = true
     },
-    setRightsDialogClose () {
+    setRightsDialogClose() {
       this.defKeys = []
     },
-    setRoles () {
-      const rids = [
-        ...this.$refs.rightsTreeRef.getCheckedKeys(),
-        ...this.$refs.rightsTreeRef.getHalfCheckedKeys()
-      ].join(',')
+    setRoles() {
+      const rids = [...this.$refs.rightsTreeRef.getCheckedKeys(), ...this.$refs.rightsTreeRef.getHalfCheckedKeys()].join(',')
       this.$http.post(`roles/${this.rolesID}/rights`, { rids }).then(e => {
         if (e.data.meta.status != 200) {
           this.$message.error(e.data.meta.msg)
@@ -187,7 +137,7 @@ export default {
       })
     }
   },
-  created () {
+  created() {
     this.getRolesList()
   }
 }

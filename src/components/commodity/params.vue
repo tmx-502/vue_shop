@@ -2,7 +2,7 @@
  * @Description:
  * @Author: liutq
  * @Date: 2021-07-22 17:44:11
- * @LastEditTime: 2021-07-26 09:02:22
+ * @LastEditTime: 2021-07-26 16:51:51
  * @LastEditors: liutq
  * @Reference:
 -->
@@ -16,50 +16,16 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="3" class="chooseGoods">选择商品： </el-col>
-        <el-col :span="9"
-          ><el-cascader
-            v-model="selectedCateKeys"
-            :options="cateList"
-            style="width: 100%"
-            :props="cascaderProps"
-            @change="handleCateChange"
-            clearable
-          ></el-cascader
-        ></el-col>
-        <el-col :span="12">
-          <el-alert
-            title="注意：只允许为三级分类设置相关参数！"
-            type="info"
-            show-icon
-          ></el-alert
-        ></el-col>
+        <el-col :span="9"><el-cascader v-model="selectedCateKeys" :options="cateList" style="width: 100%" :props="cascaderProps" @change="handleCateChange" clearable></el-cascader></el-col>
+        <el-col :span="12"> <el-alert title="注意：只允许为三级分类设置相关参数！" type="info" show-icon></el-alert></el-col>
       </el-row>
       <el-tabs v-model="activeName" @tab-click="handleTabsClick">
-        <el-tab-pane
-          v-for="item in activeNames"
-          :label="item == 'many' ? '动态属性' : '静态属性'"
-          :name="item"
-        >
-          <el-button
-            type="primary"
-            :disabled="addBtnIsDisabled"
-            size="mini"
-            @click="addParamDialogVisible = true"
-            >添加参数</el-button
-          >
-          <el-table
-            :data="item == 'many' ? manyTableData : onlyTableData"
-            border
-            stripe
-          >
+        <el-tab-pane v-for="(item, index) in activeNames" :label="item == 'many' ? '动态属性' : '静态属性'" :name="item" ::key="index">
+          <el-button type="primary" :disabled="addBtnIsDisabled" size="mini" @click="addParamDialogVisible = true">添加参数</el-button>
+          <el-table :data="item == 'many' ? manyTableData : onlyTableData" border stripe>
             <el-table-column type="expand">
               <template slot-scope="scope">
-                <el-tag
-                  v-for="(item, index) in scope.row.attr_vals"
-                  :key="index"
-                  closable
-                  @close="deleteTag(index, scope.row)"
-                  >{{ item }}</el-tag
+                <el-tag v-for="(item, index) in scope.row.attr_vals" :key="index" closable @close="deleteTag(index, scope.row)">{{ item }}</el-tag
                 ><el-input
                   class="input-new-tag"
                   v-if="scope.row.inputVisible"
@@ -70,36 +36,15 @@
                   @blur="handleInputConfirm(scope.row)"
                 >
                 </el-input>
-                <el-button
-                  v-else
-                  class="button-new-tag"
-                  size="small"
-                  @click="scope.row.inputVisible = true"
-                  >+ 添加</el-button
-                >
+                <el-button v-else class="button-new-tag" size="small" @click="scope.row.inputVisible = true">+ 添加</el-button>
               </template>
             </el-table-column>
             <el-table-column type="index"></el-table-column>
-            <el-table-column
-              label="参数名称"
-              prop="attr_name"
-            ></el-table-column>
+            <el-table-column label="参数名称" prop="attr_name"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-edit"
-                  @click="showUpdateDialog(scope.row.attr_id)"
-                  >编辑</el-button
-                >
-                <el-button
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="showDeleteParam(scope.row.attr_id)"
-                  >删除</el-button
-                >
+                <el-button size="mini" type="primary" icon="el-icon-edit" @click="showUpdateDialog(scope.row.attr_id)">编辑</el-button>
+                <el-button size="mini" type="danger" icon="el-icon-delete" @click="showDeleteParam(scope.row.attr_id)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -108,22 +53,9 @@
     </el-card>
 
     <!-- 添加参数 -->
-    <el-dialog
-      title="添加参数"
-      :visible.sync="addParamDialogVisible"
-      width="30%"
-      :before-close="addParamDialogClose"
-    >
-      <el-form
-        :model="addParamFrom"
-        :rules="addParamRules"
-        ref="addParamRef"
-        label-width="120px"
-      >
-        <el-form-item
-          :label="(activeName === 'many' ? '动态' : '静态') + '参数名称：'"
-          prop="attr_name"
-        >
+    <el-dialog title="添加参数" :visible.sync="addParamDialogVisible" width="30%" :before-close="addParamDialogClose">
+      <el-form :model="addParamFrom" :rules="addParamRules" ref="addParamRef" label-width="120px">
+        <el-form-item :label="(activeName === 'many' ? '动态' : '静态') + '参数名称：'" prop="attr_name">
           <el-input v-model="addParamFrom.attr_name"></el-input>
         </el-form-item>
       </el-form>
@@ -134,22 +66,9 @@
     </el-dialog>
 
     <!-- 修改参数 -->
-    <el-dialog
-      title="修改参数"
-      :visible.sync="updateParamDialogVisible"
-      width="30%"
-      :before-close="updateParamDialogClose"
-    >
-      <el-form
-        :model="updateParamFrom"
-        :rules="addParamRules"
-        ref="updateParamRef"
-        label-width="120px"
-      >
-        <el-form-item
-          :label="(activeName === 'many' ? '动态' : '静态') + '参数名称：'"
-          prop="attr_name"
-        >
+    <el-dialog title="修改参数" :visible.sync="updateParamDialogVisible" width="30%" :before-close="updateParamDialogClose">
+      <el-form :model="updateParamFrom" :rules="addParamRules" ref="updateParamRef" label-width="120px">
+        <el-form-item :label="(activeName === 'many' ? '动态' : '静态') + '参数名称：'" prop="attr_name">
           <el-input v-model="updateParamFrom.attr_name"></el-input>
         </el-form-item>
       </el-form>
@@ -162,7 +81,7 @@
 </template>
 <script>
 export default {
-  data () {
+  data() {
     return {
       cateList: [],
       cascaderProps: {
@@ -179,9 +98,7 @@ export default {
       addParamDialogVisible: false,
       updateParamDialogVisible: false,
       addParamRules: {
-        attr_name: [
-          { required: true, message: '请输入参数名称', trigger: 'blur' }
-        ]
+        attr_name: [{ required: true, message: '请输入参数名称', trigger: 'blur' }]
       },
       addParamFrom: {
         attr_name: ''
@@ -191,11 +108,11 @@ export default {
       newinputValue: ''
     }
   },
-  created () {
+  created() {
     this.getCateList()
   },
   methods: {
-    getCateList () {
+    getCateList() {
       this.$http.get('categories').then(e => {
         if (e.data.meta.status !== 200) {
           return this.$message.error(e.data.meta.msg)
@@ -203,7 +120,7 @@ export default {
         this.cateList = e.data.data
       })
     },
-    handleCateChange () {
+    handleCateChange() {
       if (this.selectedCateKeys.length < 3) {
         this.selectedCateKeys = []
         this.manyTableData = []
@@ -212,44 +129,31 @@ export default {
       }
       this.getParamsData()
     },
-    handleTabsClick () {
+    handleTabsClick() {
       if (this.selectedCateKeys.length < 3) return
       this.getParamsData()
     },
-    getParamsData () {
-      this.$http
-        .get(
-          `categories/${
-            this.selectedCateKeys[this.selectedCateKeys.length - 1]
-          }/attributes`,
-          { params: { sel: this.activeName } }
-        )
-        .then(e => {
-          if (e.data.meta.status !== 200) {
-            return this.$message.error(e.data.meta.msg)
-          }
-          e.data.data.forEach(item => {
-            item.attr_vals =
-              item.attr_vals !== '' ? item.attr_vals.split(',') : []
-            item.inputVisible = false
-            item.inputValue = ''
-          })
-          this[`${this.activeName}TableData`] = e.data.data
+    getParamsData() {
+      this.$http.get(`categories/${this.selectedCateKeys[this.selectedCateKeys.length - 1]}/attributes`, { params: { sel: this.activeName } }).then(e => {
+        if (e.data.meta.status !== 200) {
+          return this.$message.error(e.data.meta.msg)
+        }
+        e.data.data.forEach(item => {
+          item.attr_vals = item.attr_vals !== '' ? item.attr_vals.split(',') : []
+          item.inputVisible = false
+          item.inputValue = ''
         })
+        this[`${this.activeName}TableData`] = e.data.data
+      })
     },
-    addParam () {
+    addParam() {
       this.$refs.addParamRef.validate(valid => {
         if (!valid) return
         this.$http
-          .post(
-            `categories/${
-              this.selectedCateKeys[this.selectedCateKeys.length - 1]
-            }/attributes`,
-            {
-              attr_name: this.addParamFrom.attr_name,
-              attr_sel: this.activeName
-            }
-          )
+          .post(`categories/${this.selectedCateKeys[this.selectedCateKeys.length - 1]}/attributes`, {
+            attr_name: this.addParamFrom.attr_name,
+            attr_sel: this.activeName
+          })
           .then(e => {
             if (e.data.meta.status !== 201) {
               return this.$message.error(e.data.meta.msg)
@@ -259,20 +163,15 @@ export default {
           })
       })
     },
-    addParamDialogClose () {
+    addParamDialogClose() {
       this.$refs.addParamRef.resetFields()
       this.addParamDialogVisible = false
     },
-    showUpdateDialog (attr_id) {
+    showUpdateDialog(attr_id) {
       this.$http
-        .get(
-          `categories/${
-            this.selectedCateKeys[this.selectedCateKeys.length - 1]
-          }/attributes/${attr_id}`,
-          {
-            params: { attr_sel: this.activeName }
-          }
-        )
+        .get(`categories/${this.selectedCateKeys[this.selectedCateKeys.length - 1]}/attributes/${attr_id}`, {
+          params: { attr_sel: this.activeName }
+        })
         .then(e => {
           if (e.data.meta.status !== 200) {
             return this.$message.error(e.data.meta.msg)
@@ -281,23 +180,18 @@ export default {
           this.updateParamDialogVisible = false
         })
     },
-    updateParamDialogClose () {
+    updateParamDialogClose() {
       this.$refs.updateParamRef.resetFields()
       this.updateParamDialogVisible = false
     },
-    updateParam () {
+    updateParam() {
       this.$refs.updateParamRef.validate(valid => {
         if (!valid) return
         this.$http
-          .put(
-            `categories/${
-              this.selectedCateKeys[this.selectedCateKeys.length - 1]
-            }/attributes/${this.updateParamFrom.attr_id}`,
-            {
-              attr_name: this.updateParamFrom.attr_name,
-              attr_sel: this.activeName
-            }
-          )
+          .put(`categories/${this.selectedCateKeys[this.selectedCateKeys.length - 1]}/attributes/${this.updateParamFrom.attr_id}`, {
+            attr_name: this.updateParamFrom.attr_name,
+            attr_sel: this.activeName
+          })
           .then(e => {
             if (e.data.meta.status !== 200) {
               return this.$message.error(e.data.meta.msg)
@@ -307,28 +201,22 @@ export default {
           })
       })
     },
-    showDeleteParam (attr_id) {
+    showDeleteParam(attr_id) {
       this.$confirm('此操作将永久删除该类项目, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http
-          .delete(
-            `categories/${
-              this.selectedCateKeys[this.selectedCateKeys.length - 1]
-            }/attributes/${attr_id}`
-          )
-          .then(e => {
-            if (e.data.meta.status !== 200) {
-              return this.$message.error(e.data.meta.msg)
-            }
-            this.$message.success(e.data.meta.msg)
-            this.getParamsData()
-          })
+        this.$http.delete(`categories/${this.selectedCateKeys[this.selectedCateKeys.length - 1]}/attributes/${attr_id}`).then(e => {
+          if (e.data.meta.status !== 200) {
+            return this.$message.error(e.data.meta.msg)
+          }
+          this.$message.success(e.data.meta.msg)
+          this.getParamsData()
+        })
       })
     },
-    handleInputConfirm (row) {
+    handleInputConfirm(row) {
       row.inputVisible = false
 
       if (row.inputValue === '') return
@@ -336,31 +224,26 @@ export default {
       row.inputValue = ''
       this.updateAttrVals(row)
     },
-    updateAttrVals (row) {
+    updateAttrVals(row) {
       this.$http
-        .put(
-          `categories/${
-            this.selectedCateKeys[this.selectedCateKeys.length - 1]
-          }/attributes/${row.attr_id}`,
-          {
-            attr_name: row.attr_name,
-            attr_sel: this.activeName,
-            attr_vals: row.attr_vals.join(',')
-          }
-        )
+        .put(`categories/${this.selectedCateKeys[this.selectedCateKeys.length - 1]}/attributes/${row.attr_id}`, {
+          attr_name: row.attr_name,
+          attr_sel: this.activeName,
+          attr_vals: row.attr_vals.join(',')
+        })
         .then(e => {
           if (e.data.meta.status !== 200) {
             return this.$message.error(e.data.meta.msg)
           }
         })
     },
-    deleteTag (index, row) {
+    deleteTag(index, row) {
       row.attr_vals.splice(index, 1)
       this.updateAttrVals(row)
     }
   },
   computed: {
-    addBtnIsDisabled () {
+    addBtnIsDisabled() {
       return this.selectedCateKeys.length < 3
     }
   }

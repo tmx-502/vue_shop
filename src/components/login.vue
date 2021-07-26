@@ -8,27 +8,17 @@
       <!--登录-->
       <el-form ref="formInline" :model="formInline" :rules="ruleInline">
         <el-form-item class="fromItem" prop="user">
-          <el-input
-            type="text"
-            v-model="formInline.username"
-            placeholder="Username"
-          >
+          <el-input type="text" v-model="formInline.username" placeholder="Username">
             <template slot="prepend"><i class="el-icon-user"></i></template>
           </el-input>
         </el-form-item>
         <el-form-item class="fromItem" prop="password">
-          <el-input
-            type="password"
-            v-model="formInline.password"
-            placeholder="Password"
-          >
+          <el-input type="password" v-model="formInline.password" placeholder="Password">
             <template slot="prepend"> <i class="el-icon-lock"></i></template>
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSubmit('formInline')"
-            >Signin</el-button
-          >
+          <el-button type="primary" @click="handleSubmit('formInline')">Signin</el-button>
         </el-form-item>
       </el-form>
     </div>

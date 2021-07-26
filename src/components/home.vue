@@ -73,9 +73,7 @@
         <img class="layout-logo" src="../assets/电商.png" />
         <span class="title">电商管理系统</span>
       </div>
-      <el-button @click="exit" type="info" icon="el-icon-switch-button"
-        >退出</el-button
-      >
+      <el-button @click="exit" type="info" icon="el-icon-switch-button">退出</el-button>
     </el-header>
     <!-- 主体 -->
     <el-container>
@@ -93,21 +91,12 @@
           :default-active="activePath"
         >
           <div class="btn-toggle" @click="toggleCollapse">|||</div>
-          <el-submenu
-            :index="item.id + ''"
-            v-for="item in menulist"
-            :key="item.id"
-          >
+          <el-submenu :index="item.id + ''" v-for="item in menulist" :key="item.id">
             <template slot="title">
               <i :class="menuIconList[item.id]" />
               <span class="authName">{{ item.authName }}</span>
             </template>
-            <el-menu-item
-              class="it_authName"
-              :index="it.path"
-              v-for="it in item.children"
-              :key="it.id"
-              @click="saveNavState(it.path)"
+            <el-menu-item class="it_authName" :index="it.path" v-for="it in item.children" :key="it.id" @click="saveNavState(it.path)"
               ><i class="el-icon-menu"></i>
               {{ it.authName }}
             </el-menu-item>
